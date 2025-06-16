@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student List & Details</title>
+  <style>
+    :root {
+      --unsw-yellow: #ffe600;
+      --unsw-charcoal: #231f20;
+      --bg-light: #f9f9f9;
+      --card-bg: #ffffff;
+      --text-light: #fff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: var(--bg-light);
+      color: var(--unsw-charcoal);
+    }
+    header {
+      background: var(--unsw-yellow);
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: var(--card-bg);
+      border-right: 2px solid #eee;
+      overflow-y: auto;
+    }
+    .student-item {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .student-item:hover,
+    .student-item.active {
+      background: var(--unsw-yellow);
+      color: var(--text-light);
+    }
+    /* Detail panel */
+    .detail {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    .cards {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 1rem 1.5rem;
+      flex: 1;
+      min-width: 160px;
+      text-align: center;
+    }
+    .card h4 {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .card p {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .charts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .chart-container {
+      background: var(--card-bg);
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 100%;
+      height: 300px;
+    }
+    .chart-container canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  </style>
+</head>
+<body>
+
+  <header>UNSW Student Dashboard</header>
+
+  <main>
+    <div class="sidebar" id="student-list">
+      <!-- JS will populate list here -->
+    </div>
+    <div class="detail">
+      <h2 id="student-name">Select a student</h2>
+
+      <div class="cards">
+        <div class="card">
+          <h4>Completion Rate</h4>
+          <p id="card-completion">—%</p>
+        </div>
+        <div class="card">
+          <h4>Avg. Response Time</h4>
+          <p id="card-time">—s</p>
+        </div>
+        <div class="card">
+          <h4>Accuracy Rate</h4>
+          <p id="card-accuracy">—%</p>
+        </div>
+      </div>
+
+      <div class="charts">
+        <div class="chart-container">
+          <canvas id="doughnutChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Sample student data
+    const students = [
+      {
+        name: 'Alice Wang',
+        completion: 92,
+        avgTime: 45,
+        accuracy: 88,
+        completionTrend: [90, 92, 89, 94, 93],
+        timeTrend: [50, 48, 47, 45, 44],
+        labels: ['Week1','Week2','Week3','Week4','Week5']
+      },
+      {
+        name: 'Bob Lee',
+        completion: 78,
+        avgTime: 60,
+        accuracy: 80,
+        completionTrend: [75, 77, 80, 78, 79],
+        timeTrend: [62, 61, 60, 59, 58],
+        labels: ['Week1','Week2','Week3','Week4','Week5']
+      },
+      {
+        name: 'Cathy Nguyen',
+        completion: 85,
+        avgTime: 52,
+        accuracy: 92,
+        completionTrend: [83, 85, 84, 86, 87],
+        timeTrend: [55, 54, 53, 52, 51],
+        labels: ['Week1','Week2','Week3','Week4','Week5']
+      },
+      // add more students...
+    ];
+
+    const listEl = document.getElementById('student-list');
+    const nameEl = document.getElementById('student-name');
+    const cardCompletion = document.getElementById('card-completion');
+    const cardTime       = document.getElementById('card-time');
+    const cardAccuracy   = document.getElementById('card-accuracy');
+
+    // Initialize Chart.js instances (empty)
+    const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+    const lineCtx     = document.getElementById('lineChart').getContext('2d');
+    let doughnutChart = new Chart(doughnutCtx, { type: 'doughnut', data: {}, options:{ responsive:true, plugins:{legend:{position:'bottom'}} } });
+    let lineChart     = new Chart(lineCtx,     { type: 'line',    data: {}, options:{ responsive:true, scales:{y:{beginAtZero:true}} } });
+
+    // Populate sidebar
+    students.forEach((stu, idx) => {
+      const div = document.createElement('div');
+      div.className = 'student-item';
+      div.textContent = stu.name;
+      div.addEventListener('click', () => selectStudent(idx, div));
+      listEl.append(div);
+    });
+
+    function selectStudent(i, el) {
+      // highlight
+      document.querySelectorAll('.student-item').forEach(d=>d.classList.remove('active'));
+      el.classList.add('active');
+      const s = students[i];
+      nameEl.textContent = s.name;
+      cardCompletion.textContent = s.completion + '%';
+      cardTime.textContent       = s.avgTime + ' s';
+      cardAccuracy.textContent   = s.accuracy + '%';
+
+      // update doughnut
+      doughnutChart.data = {
+        labels: ['Done','Remaining'],
+        datasets: [{ data: [s.completion, 100 - s.completion] }]
+      };
+      doughnutChart.update();
+
+      // update line
+      lineChart.data = {
+        labels: s.labels,
+        datasets: [{ 
+          label: 'Completion %', 
+          data: s.completionTrend, 
+          fill: false, 
+          tension: 0.3, 
+          pointRadius: 3 
+        },{
+          label: 'Avg Time (s)',
+          data: s.timeTrend,
+          fill: false,
+          borderDash: [5,5],
+          tension: 0.3,
+          pointRadius: 3
+        }]
+      };
+      lineChart.update();
+    }
+
+    // select first by default
+    document.querySelector('.student-item').click();
+  </script>
+</body>
+</html>
