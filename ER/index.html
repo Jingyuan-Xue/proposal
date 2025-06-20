@@ -2,46 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Escape-Room Slide Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UNSW Escape-Room Editor</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- LEFT PANEL – slide thumbnails -->
-  <aside class="sidebar" id="thumbs">
-    <div class="thumb active"  data-tpl="tmpl-text"        >Text</div>
-    <div class="thumb"         data-tpl="tmpl-video"       >Video</div>
-    <div class="thumb"         data-tpl="tmpl-mcq"         >MCQ</div>
-    <div class="thumb"         data-tpl="tmpl-blank"       >Blank</div>
-    <div class="thumb"         data-tpl="tmpl-interactive" >Interactive</div>
-    <div class="thumb"         data-tpl="tmpl-discussion"  >Discussion</div>
-  </aside>
+  <!-- ------ TOP-BAR ------ -->
+  <header class="topbar">
+    <span>Escape-Room Editor</span>
+    <span>Dr Alex Nguyen</span>
+    <a href="#">Manage</a>
+    <a href="#">Log&nbsp;out</a>
+  </header>
 
-  <!-- CENTRE PANEL – editable whiteboard -->
-  <div class="whiteboard-wrapper">
-    <div id="wb" class="whiteboard" contenteditable="true">
-      Double-click and start typing your story …
+  <div class="layout">
+    <!-- ------ SIDEBAR (thumbnails) ------ -->
+    <aside class="sidebar" id="thumbs">
+      <div class="thumb active"  data-tpl="tmpl-text"       ><div class="thumb-preview"></div></div>
+      <div class="thumb"         data-tpl="tmpl-video"      ><div class="thumb-preview"></div></div>
+      <div class="thumb"         data-tpl="tmpl-mcq"        ><div class="thumb-preview"></div></div>
+      <div class="thumb"         data-tpl="tmpl-blank"      ><div class="thumb-preview"></div></div>
+      <div class="thumb"         data-tpl="tmpl-interactive"><div class="thumb-preview"></div></div>
+      <div class="thumb"         id="open-discuss"          ><div class="thumb-preview"><p style="margin:55% auto;text-align:center;font-size:2rem;">💬</p></div></div>
+    </aside>
+
+    <!-- ------ WHITEBOARD ------ -->
+    <div class="whiteboard-wrapper">
+      <div id="wb" class="whiteboard" contenteditable="true">
+        Double-click and start typing your story …
+      </div>
     </div>
+
+    <!-- ------ TOOLBAR ------ -->
+    <aside class="toolbar">
+      <h2>Slide settings</h2>
+      <label>Background
+        <input type="color" id="bgPicker" value="#ffffff">
+      </label>
+      <label>Text colour
+        <input type="color" id="fgPicker" value="#000000">
+      </label>
+      <label>Font size (px)
+        <input type="number" id="fsPicker" value="16" min="10" max="72">
+      </label>
+    </aside>
   </div>
 
-  <!-- RIGHT PANEL – style controls -->
-  <aside class="toolbar">
-    <h2>Slide Settings</h2>
-
-    <label>Background
-      <input type="color" id="bgPicker" value="#ffffff">
-    </label>
-
-    <label>Text colour
-      <input type="color" id="fgPicker" value="#000000">
-    </label>
-
-    <label>Font size (px)
-      <input type="number" id="fsPicker" value="16" min="10" max="72">
-    </label>
-  </aside>
-
-  <!-- HIDDEN TEMPLATES (one per slide type) -->
+  <!-- ------ TEMPLATES (hidden) ------ -->
   <template id="tmpl-text">
     Double-click and start typing your story …
   </template>
@@ -62,53 +70,63 @@
   </template>
 
   <template id="tmpl-blank">
-    <p contenteditable="true">
-      The chemical symbol for water is <u>______</u>.
-    </p>
+    <p contenteditable="true">The chemical symbol for water is <u>______</u>.</p>
   </template>
 
   <template id="tmpl-interactive">
-    <p><strong>Conditional Question</strong> (example)</p>
-    <p>If your UID ends in an odd number, answer: <em>What is 3 × 7?</em></p>
-    <p>If it ends in an even number, answer: <em>What is 8 + 5?</em></p>
+    <p><strong>Conditional Question (example)</strong></p>
+    <p>If UID ends in odd → 3 × 7? Even → 8 + 5?</p>
   </template>
 
-  <template id="tmpl-discussion">
-    <h3>Discussion Board</h3>
-    <textarea id="post" rows="4" placeholder="Write a post…"></textarea>
-    <button onclick="addPost()">Post</button>
-    <hr>
-    <div id="feed"></div>
-  </template>
+  <!-- ------ MODAL DISCUSSION BOARD ------ -->
+  <div id="discussionModal" class="modal hidden">
+    <div class="modal-card">
+      <h3>Discussion Board</h3>
+      <textarea id="post" placeholder="Write a post…"></textarea>
+      <div style="display:flex;gap:.6rem;justify-content:flex-end">
+        <button onclick="addPost()">Post</button>
+        <button onclick="closeModal()">Close</button>
+      </div>
+      <hr style="margin:1rem 0">
+      <div id="feed"></div>
+    </div>
+  </div>
 
-  <!-- Tiny JS: swaps templates & handles style inputs -->
+  <!-- ------ JS (tiny) ------ -->
   <script>
-    const wb = document.getElementById('wb');
+    const wb=document.getElementById('wb');
 
-    /* style sliders */
-    bgPicker.oninput = e => wb.style.setProperty('--wb-bg', e.target.value);
-    fgPicker.oninput = e => wb.style.setProperty('--wb-color', e.target.value);
-    fsPicker.oninput = e => wb.style.fontSize = e.target.value + 'px';
+    /* style controls */
+    bgPicker.oninput=e=>wb.style.setProperty('--wb-bg',e.target.value);
+    fgPicker.oninput=e=>wb.style.setProperty('--wb-color',e.target.value);
+    fsPicker.oninput=e=>wb.style.fontSize=e.target.value+'px';
 
-    /* slide switching */
-    document.querySelectorAll('#thumbs .thumb').forEach(th => {
-      th.onclick = () => {
-        document.querySelectorAll('#thumbs .thumb').forEach(x => x.classList.remove('active'));
+    /* generate thumbnails once */
+    document.querySelectorAll('.thumb[data-tpl]').forEach(th=>{
+      const tpl=document.getElementById(th.dataset.tpl);
+      if(tpl) th.querySelector('.thumb-preview').innerHTML=tpl.innerHTML;
+    });
+
+    /* slide switching & modal trigger */
+    document.querySelectorAll('#thumbs .thumb').forEach(th=>{
+      th.onclick=()=>{
+        if(th.id==='open-discuss'){openModal();return;}
+        document.querySelectorAll('#thumbs .thumb').forEach(x=>x.classList.remove('active'));
         th.classList.add('active');
-        const tpl = document.getElementById(th.dataset.tpl);
-        wb.innerHTML = tpl.innerHTML;
+        wb.innerHTML=document.getElementById(th.dataset.tpl).innerHTML;
       };
     });
 
-    /* discussion post helper */
+    /* modal helpers */
+    const modal=document.getElementById('discussionModal');
+    function openModal(){modal.classList.remove('hidden');}
+    function closeModal(){modal.classList.add('hidden');}
     function addPost(){
       const txt=document.getElementById('post');
-      if(!txt||!txt.value.trim())return;
+      if(!txt.value.trim())return;
       const div=document.createElement('div');
-      div.style.margin='.5rem 0';
-      div.textContent=txt.value;
-      document.getElementById('feed').prepend(div);
-      txt.value='';
+      div.style.margin='.55rem 0';div.textContent=txt.value;
+      document.getElementById('feed').prepend(div);txt.value='';
     }
   </script>
 </body>
