@@ -67,8 +67,12 @@
       flex-direction:column;
     }
     .history-card img {
-      width:100%; height:140px; object-fit:cover;
+      width: 100%;
+      height: 140px;             /* 和卡片高度保持一致 */
+      object-fit: contain;       /* 整图等比缩放，完整显示 */
+      background: var(--gray-mid); /* 空白处用灰色背景兜底 */
     }
+
     .history-info {
       padding:1rem; flex:1;
     }
