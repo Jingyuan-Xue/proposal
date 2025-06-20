@@ -53,7 +53,8 @@ body{padding-top:56px}
   width:var(--toolbar-w);padding:1.25rem;border-left:4px solid var(--unsw-yellow);overflow-y:auto}
 .toolbar h2{font-size:1.1rem;margin-bottom:1rem;font-weight:700}
 label{display:block;font-size:.85rem;margin-top:1rem}
-input[type="color"],input[type="number"],textarea{width:100%;padding:.45rem;border:1px solid #ccc;border-radius:4px;margin-top:.35rem}
+input[type="color"],input[type="number"],textarea,select{
+  width:100%;padding:.45rem;border:1px solid #ccc;border-radius:4px;margin-top:.35rem}
 
 /* ─── 通用按钮 ──────────────────────────────────────── */
 button{cursor:pointer;padding:.5rem 1.1rem;border:0;border-radius:4px;background:var(--unsw-yellow);
@@ -65,12 +66,12 @@ button:hover{background:#e6cf00}
   position:fixed;top:60%;left:50%;transform:translate(-50%,-50%);
   padding:1.4rem 2rem;background:var(--unsw-yellow);color:var(--unsw-charcoal);
   border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.25);z-index:2000;width:280px;text-align:center;
-  pointer-events:none;            /* 整个蒙层不吃点 */
+  pointer-events:none;             /* 蒙层不吃点，侧栏可点 */
 }
 .feedback button{pointer-events:auto;}  /* 只有按钮能点 */
 .feedback p{font-size:1.2rem;font-weight:700;margin-bottom:.8rem}
 
-/* ─── 公式重排 & 拼图特有样式 ───────────────────────── */
+/* ─── 公式重排 & 拼图样式 ───────────────────────────── */
 .reorder-list{list-style:none;padding:0;margin-top:1rem;border:1px dashed #ccc;min-height:48px}
 .reorder-list li{padding:.4rem .6rem;border-bottom:1px solid #eee;cursor:move;background:#fafafa}
 .reorder-list li:last-child{border-bottom:none}
@@ -87,7 +88,7 @@ button:hover{background:#e6cf00}
 <!-- 顶栏 -->
 <header class="topbar">
   <span>Escape-Room Editor</span>
-  <span>Dr Alex Nguyen</span>
+  <span>Dr McHale</span>
   <a href="#">Manage</a><a href="#">Log out</a>
 </header>
 
@@ -115,9 +116,24 @@ button:hover{background:#e6cf00}
     </div>
   </div>
 
-  <!-- 工具条（仅颜色/字体示例） -->
+  <!-- 工具条（右） -->
   <aside class="toolbar">
     <h2>Slide settings</h2>
+
+    <!-- 新增内容类型选择 -->
+    <label>Content type
+      <select id="typeSelect">
+        <option value="tmpl-text">Text</option>
+        <option value="tmpl-video">Video</option>
+        <option value="tmpl-mcq">MCQ</option>
+        <option value="tmpl-blank">Blank-Fill</option>
+        <option value="tmpl-image">Image</option>
+        <option value="tmpl-unlock">Unlock Game</option>
+        <option value="tmpl-reorder">Formula Reorder</option>
+        <option value="tmpl-slidepuzzle">Slide Puzzle</option>
+      </select>
+    </label>
+
     <label>Background <input type="color" id="bgPicker" value="#ffffff"></label>
     <label>Text colour <input type="color" id="fgPicker" value="#000000"></label>
     <label>Font size (px) <input type="number" id="fsPicker" value="16" min="10" max="72"></label>
@@ -199,7 +215,7 @@ const wb = document.getElementById('wb');
 /* ======= 工具函数 ======= */
 const shuffle = arr => arr.sort(()=>Math.random()-0.5);
 
-/* ① 工具：隐藏反馈层 */
+/* 工具：隐藏反馈层 */
 function hideFeedback(){ feedback.classList.add('hidden'); }
 
 /* ======= 颜色/字体立即响应 ======= */
@@ -213,12 +229,12 @@ document.querySelectorAll('.thumb[data-tpl]').forEach(th=>{
   th.querySelector('.thumb-preview').innerHTML=tpl.innerHTML;
 });
 
-/* ② 调整缩略图事件 */
+/* ======= 缩略图点击：切页面 + 关弹窗 ======= */
 document.querySelectorAll('#thumbs .thumb').forEach((th,i)=>{
   th.onclick = () => {
-    hideFeedback();               // ← 先收弹窗
-    if(i===cur) return;           // 切到同页就不反应
-    loadSlide(i);                 // 切换页面
+    hideFeedback();
+    if(i===cur) return;
+    loadSlide(i);
   };
 });
 
@@ -230,7 +246,8 @@ function loadSlide(idx){
   wb.innerHTML = document.getElementById(id).innerHTML;
   lastCorrect = false;
   initSlide(id);
-  saveProgress();            // 自动保存位置
+  typeSel.value = id;     // 同步下拉框
+  saveProgress();
 }
 function nextSlide(){ if(cur<templates.length-1) loadSlide(cur+1);}
 function prevSlide(){ if(cur>0) loadSlide(cur-1);}
@@ -247,7 +264,7 @@ function initSlide(type){
   if(type==='tmpl-blank'){
     const inp=wb.querySelector('#blankInput');
     inp.onkeydown=e=>{
-      if(e.key==='Enter'){lastCorrect=/h2o/i.test(inp.value.trim());}
+      if(e.key==='Enter') lastCorrect=/h2o/i.test(inp.value.trim());
     };
   }
   if(type==='tmpl-interactive'){
@@ -255,7 +272,7 @@ function initSlide(type){
     inp.onkeydown=e=>{
       if(e.key==='Enter'){
         const v=inp.value.trim();
-        lastCorrect = v==='21' || v==='13'; // 3×7=21  8+5=13
+        lastCorrect = v==='21' || v==='13';
       }
     };
   }
@@ -278,7 +295,7 @@ function initSlide(type){
     };
   }
   if(type==='tmpl-reorder'){
-    const terms=['Σ(X – μ)²','σ²','/','N','='];      // 初始乱序
+    const terms=['Σ(X – μ)²','σ²','/','N','='];
     const correct=['σ²','=','Σ(X – μ)²','/','N'];
     const list=wb.querySelector('#reorderList');
     list.innerHTML='';
@@ -289,7 +306,6 @@ function initSlide(type){
     });
     list.ondragover=ev=>ev.preventDefault();
     list.ondrop=ev=>{
-      ev.preventDefault();
       const drag=ev.dataTransfer.getData('text');
       const target=ev.target.closest('li');
       if(!target)return;
@@ -306,7 +322,7 @@ function initSlide(type){
     };
   }
   if(type==='tmpl-slidepuzzle'){
-    const parts=['σ²','=','Σ','(X','–','μ)','²/','N','']; // 最后一块空
+    const parts=['σ²','=','Σ','(X','–','μ)','²/','N',''];
     const correct=[...parts];
     const grid=wb.querySelector('#puzzleGrid');
     grid.innerHTML='';
@@ -355,6 +371,16 @@ function loadProgress(){
 submitBtn.onclick=()=>showFeedback(lastCorrect);
 prevBtn.onclick=prevSlide;
 saveBtn.onclick=()=>{saveProgress();alert('Progress saved');}
+
+/* 下拉框：即时切换模板 */
+const typeSel=document.getElementById('typeSelect');
+typeSel.onchange=e=>{
+  const tplId=e.target.value;
+  hideFeedback();
+  wb.innerHTML=document.getElementById(tplId).innerHTML;
+  lastCorrect=false;
+  initSlide(tplId);
+};
 
 /* ======= 启动 ======= */
 loadProgress();
