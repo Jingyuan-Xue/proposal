@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Teacher Dashboard - Sidebar Upgrade</title>
+  <title>Teacher Dashboard - Horizontal Menu</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
@@ -13,54 +13,42 @@
 
     .header {
       background-color: #FFD600;
-      padding: 25px 20px;
-      text-align: center;
-      font-size: 32px;
+      padding: 20px;
+      font-size: 28px;
       font-weight: bold;
+      text-align: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
     }
 
-    .layout {
+    .nav {
       display: flex;
-      min-height: calc(100vh - 80px);
-    }
-
-    .sidebar {
-      width: 220px;
+      justify-content: center;
       background-color: #fff;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-      padding-top: 30px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    .sidebar-item {
-      padding: 20px 30px;
-      font-size: 18px;
+    .nav-item {
+      padding: 15px 25px;
+      font-size: 16px;
+      font-weight: bold;
       color: #333;
       cursor: pointer;
       display: flex;
       align-items: center;
-      transition: 0.3s;
+      transition: background 0.3s;
     }
 
-    .sidebar-item i {
-      margin-right: 15px;
-      font-size: 20px;
+    .nav-item i {
+      margin-right: 8px;
       color: #FFD600;
     }
 
-    .sidebar-item:hover {
-      background-color: #FFF3CD;
-      font-weight: bold;
+    .nav-item:hover {
+      background-color: #fff7c2;
     }
 
     .main-content {
-      flex: 1;
-      padding: 30px 40px;
+      padding: 40px;
     }
 
     .stats {
@@ -92,7 +80,7 @@
       background-color: white;
       border-radius: 12px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      width: 240px;
+      width: 360px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -149,7 +137,7 @@
     }
 
     .add-card {
-      width: 240px;
+      width: 360px;
       height: 300px;
       background-color: #fff;
       border: 4px dashed #FFD600;
@@ -174,62 +162,55 @@
 
 <div class="header">Teacher Dashboard</div>
 
-<div class="layout">
+<div class="nav">
+  <div class="nav-item"><i class="fas fa-home"></i> Dashboard</div>
+  <div class="nav-item"><i class="fas fa-users"></i> Students</div>
+  <div class="nav-item"><i class="fas fa-chart-bar"></i> Reports</div>
+  <div class="nav-item"><i class="fas fa-cog"></i> Settings</div>
+</div>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="sidebar-item"><i class="fas fa-home"></i> Dashboard</div>
-    <div class="sidebar-item"><i class="fas fa-gamepad"></i> Games</div>
-    <div class="sidebar-item"><i class="fas fa-users"></i> Students</div>
-    <div class="sidebar-item"><i class="fas fa-chart-bar"></i> Reports</div>
-    <div class="sidebar-item"><i class="fas fa-cog"></i> Settings</div>
+<div class="main-content">
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-box">Total Games: 12</div>
+    <div class="stat-box">Total Students: 86</div>
+    <div class="stat-box">Avg Completion: 75%</div>
   </div>
 
-  <!-- Main content -->
-  <div class="main-content">
+  <!-- Cards -->
+  <div class="card-container">
 
-    <!-- Stats -->
-    <div class="stats">
-      <div class="stat-box">Total Games: 12</div>
-      <div class="stat-box">Total Students: 86</div>
-      <div class="stat-box">Avg Completion: 75%</div>
+    <!-- Game 1 -->
+    <div class="card">
+      <img src="assets/game01.jpg" alt="Game 1">
+      <div class="card-title">Escape Room 1</div>
+      <div class="card-buttons">
+        <button class="grade-btn" onclick="viewGrades()">
+          <i class="fas fa-chart-line"></i> Grades
+        </button>
+        <button class="edit-btn" onclick="editGame()">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+      </div>
     </div>
 
-    <!-- Cards -->
-    <div class="card-container">
-
-      <!-- Game 1 -->
-      <div class="card">
-        <img src="https://via.placeholder.com/240x150?text=Game+1" alt="Game 1">
-        <div class="card-title">Escape Room 1</div>
-        <div class="card-buttons">
-          <button class="grade-btn" onclick="viewGrades()">
-            <i class="fas fa-chart-line"></i> Grades
-          </button>
-          <button class="edit-btn" onclick="editGame()">
-            <i class="fas fa-edit"></i> Edit
-          </button>
-        </div>
+    <!-- Game 2 -->
+    <div class="card">
+      <img src="assets/game02.jpg" alt="Game 2">
+      <div class="card-title">Escape Room 2</div>
+      <div class="card-buttons">
+        <button class="grade-btn" onclick="viewGrades()">
+          <i class="fas fa-chart-line"></i> Grades
+        </button>
+        <button class="edit-btn" onclick="editGame()">
+          <i class="fas fa-edit"></i> Edit
+        </button>
       </div>
-
-      <!-- Game 2 -->
-      <div class="card">
-        <img src="https://via.placeholder.com/240x150?text=Game+2" alt="Game 2">
-        <div class="card-title">Escape Room 2</div>
-        <div class="card-buttons">
-          <button class="grade-btn" onclick="viewGrades()">
-            <i class="fas fa-chart-line"></i> Grades
-          </button>
-          <button class="edit-btn" onclick="editGame()">
-            <i class="fas fa-edit"></i> Edit
-          </button>
-        </div>
-      </div>
-
-      <!-- Add Card -->
-      <div class="add-card" onclick="createGame()">+</div>
-
     </div>
+
+    <!-- Add Card -->
+    <div class="add-card" onclick="createGame()">+</div>
 
   </div>
 
