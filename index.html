@@ -101,6 +101,62 @@
       color: #777;
       margin-bottom: 20px;
     }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 350px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 0.6rem;
+      margin: 0.6rem 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .modal-content button {
+      width: 100%;
+      padding: 0.7rem;
+      background-color: var(--unsw-charcoal);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .modal-content button:hover {
+      background-color: #000;
+    }
+
+    .close-btn {
+      float: right;
+      font-size: 1.2rem;
+      color: #888;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      color: #000;
+    }
   </style>
 </head>
 <body>
@@ -113,14 +169,14 @@
   <main>
     <div class="card-group">
       <!-- Teacher Card -->
-      <div class="login-card" onclick="location.href='https://moodle.unsw.edu.au/login/index.php?role=teacher'">
+      <div class="login-card" onclick="openLoginModal('Teacher')">
         <img src="assets/teacher.png" alt="Teacher Logo">
         <h2>Teacher Login</h2>
         <div class="login-text">Click to login with Moodle</div>
       </div>
 
       <!-- Student Card -->
-      <div class="login-card" onclick="location.href='https://moodle.unsw.edu.au/login/index.php?role=student'">
+      <div class="login-card" onclick="openLoginModal('Student')">
         <img src="assets/graduation.png" alt="Student Logo">
         <h2>Student Login</h2>
         <div class="login-text">Click to login with Moodle</div>
@@ -131,6 +187,42 @@
   <footer>
     &copy; 2025 UNSW Sydney • <a href="https://moodle.telt.unsw.edu.au">Moodle Home</a>
   </footer>
+
+  <!-- Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+      <h2 id="modalTitle">Login</h2>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="submitLogin()">Login</button>
+    </div>
+  </div>
+
+  <script>
+    function openLoginModal(role) {
+      document.getElementById("modalTitle").textContent = role + " Login";
+      document.getElementById("loginModal").style.display = "block";
+    }
+
+    function closeLoginModal() {
+      document.getElementById("loginModal").style.display = "none";
+    }
+
+    function submitLogin() {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      alert("Logging in as: " + user);
+      closeLoginModal();
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById("loginModal");
+      if (event.target === modal) {
+        closeLoginModal();
+      }
+    };
+  </script>
 
 </body>
 </html>
