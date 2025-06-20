@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Escape-Room Slide Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- LEFT PANEL – slide thumbnails -->
+  <aside class="sidebar" id="thumbs">
+    <div class="thumb active"  data-tpl="tmpl-text"        >Text</div>
+    <div class="thumb"         data-tpl="tmpl-video"       >Video</div>
+    <div class="thumb"         data-tpl="tmpl-mcq"         >MCQ</div>
+    <div class="thumb"         data-tpl="tmpl-blank"       >Blank</div>
+    <div class="thumb"         data-tpl="tmpl-interactive" >Interactive</div>
+    <div class="thumb"         data-tpl="tmpl-discussion"  >Discussion</div>
+  </aside>
+
+  <!-- CENTRE PANEL – editable whiteboard -->
+  <div class="whiteboard-wrapper">
+    <div id="wb" class="whiteboard" contenteditable="true">
+      Double-click and start typing your story …
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL – style controls -->
+  <aside class="toolbar">
+    <h2>Slide Settings</h2>
+
+    <label>Background
+      <input type="color" id="bgPicker" value="#ffffff">
+    </label>
+
+    <label>Text colour
+      <input type="color" id="fgPicker" value="#000000">
+    </label>
+
+    <label>Font size (px)
+      <input type="number" id="fsPicker" value="16" min="10" max="72">
+    </label>
+  </aside>
+
+  <!-- HIDDEN TEMPLATES (one per slide type) -->
+  <template id="tmpl-text">
+    Double-click and start typing your story …
+  </template>
+
+  <template id="tmpl-video">
+    <p>Paste a YouTube/Vimeo embed link:</p>
+    <textarea placeholder="https://www.youtube.com/embed/…"></textarea>
+  </template>
+
+  <template id="tmpl-mcq">
+    <h3 contenteditable="true">What is the capital of Australia?</h3>
+    <ul>
+      <li contenteditable="true">Sydney</li>
+      <li contenteditable="true">Melbourne</li>
+      <li contenteditable="true">Canberra</li>
+      <li contenteditable="true">Perth</li>
+    </ul>
+  </template>
+
+  <template id="tmpl-blank">
+    <p contenteditable="true">
+      The chemical symbol for water is <u>______</u>.
+    </p>
+  </template>
+
+  <template id="tmpl-interactive">
+    <p><strong>Conditional Question</strong> (example)</p>
+    <p>If your UID ends in an odd number, answer: <em>What is 3 × 7?</em></p>
+    <p>If it ends in an even number, answer: <em>What is 8 + 5?</em></p>
+  </template>
+
+  <template id="tmpl-discussion">
+    <h3>Discussion Board</h3>
+    <textarea id="post" rows="4" placeholder="Write a post…"></textarea>
+    <button onclick="addPost()">Post</button>
+    <hr>
+    <div id="feed"></div>
+  </template>
+
+  <!-- Tiny JS: swaps templates & handles style inputs -->
+  <script>
+    const wb = document.getElementById('wb');
+
+    /* style sliders */
+    bgPicker.oninput = e => wb.style.setProperty('--wb-bg', e.target.value);
+    fgPicker.oninput = e => wb.style.setProperty('--wb-color', e.target.value);
+    fsPicker.oninput = e => wb.style.fontSize = e.target.value + 'px';
+
+    /* slide switching */
+    document.querySelectorAll('#thumbs .thumb').forEach(th => {
+      th.onclick = () => {
+        document.querySelectorAll('#thumbs .thumb').forEach(x => x.classList.remove('active'));
+        th.classList.add('active');
+        const tpl = document.getElementById(th.dataset.tpl);
+        wb.innerHTML = tpl.innerHTML;
+      };
+    });
+
+    /* discussion post helper */
+    function addPost(){
+      const txt=document.getElementById('post');
+      if(!txt||!txt.value.trim())return;
+      const div=document.createElement('div');
+      div.style.margin='.5rem 0';
+      div.textContent=txt.value;
+      document.getElementById('feed').prepend(div);
+      txt.value='';
+    }
+  </script>
+</body>
+</html>

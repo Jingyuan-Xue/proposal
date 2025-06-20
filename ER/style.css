@@ -1,0 +1,24 @@
+/* layout */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,sans-serif;height:100vh;display:flex}
+.sidebar{width:220px;border-right:1px solid #e0e0e0;overflow-y:auto}
+.toolbar{width:260px;border-left:1px solid #e0e0e0;padding:1rem}
+.whiteboard-wrapper{flex:1;display:flex;justify-content:center;align-items:center}
+.whiteboard{width:80%;height:90%;border:2px dashed #ccc;padding:2rem;
+            overflow:auto;background:var(--wb-bg,#fff);color:var(--wb-color,#000)}
+
+/* thumbs */
+.thumb{cursor:pointer;padding:.5rem;border-bottom:1px solid #f0f0f0}
+.thumb.active,.thumb:hover{background:#eef6ff}
+
+/* toolbar widgets */
+.toolbar h2{font-size:1.1rem;margin-bottom:1rem}
+label{display:block;font-size:.85rem;margin-top:1rem}
+input[type="color"],input[type="number"],textarea,select{
+  width:100%;padding:.4rem;margin-top:.4rem;border:1px solid #ccc;border-radius:4px}
+textarea{resize:vertical}
+
+/* simple button */
+button{cursor:pointer;padding:.4rem .6rem;border:0;background:#1665d8;
+       color:#fff;border-radius:4px;font-size:.85rem}
+button:hover{background:#0d4fb9}
