@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-   
   <meta charset="UTF-8" />
-   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UNSW Moodle Portal</title>
-    <style>
+  <title>UNSW Moodle Portal</title>
+  <style>
     :root {
       --unsw-yellow: #ffe600;
       --unsw-charcoal: #231f20;
@@ -15,10 +12,13 @@
       --card-bg: #fafafa;
     }
 
-    * {
-      box-sizing: border-box;
+    html, body {
       margin: 0;
       padding: 0;
+    }
+
+    * {
+      box-sizing: border-box;
       font-family: "Arial", sans-serif;
     }
 
@@ -69,42 +69,29 @@
       width: 500px;
       padding: 2rem 1.5rem;
       text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .login-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
 
     .login-card img {
       height: 60px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.3rem;
     }
 
     .login-card h2 {
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       font-size: 1.5rem;
     }
 
-    .login-card p {
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-      color: #555;
-    }
-
-    .login-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: var(--unsw-charcoal);
-      color: var(--text-light);
-      text-decoration: none;
-      transition: background 0.2s;
-    }
-
-    .login-btn:hover {
-      background: #000;
+    .login-text {
+      font-size: 0.95rem;
+      color: var(--unsw-charcoal);
+      margin-top: 0.5rem;
     }
 
     footer {
@@ -112,36 +99,38 @@
       padding: 1rem;
       font-size: 0.85rem;
       color: #777;
-      margin-top: auto;
-      margin-bottom: 1.5rem;
+      margin-bottom: 20px;
     }
   </style>
 </head>
-
 <body>
-    <header>
-        <img src="assets/logo.png" alt="UNSW Logo">
-        <h1>escape room</h1>
-      </header>
-    <main>
-        <div class="card-group">
-            <!-- Teacher Card -->
-            <div class="login-card">
-                <img src="assets/teacher.png" alt="Teacher Logo">
-                <h2>Teacher Login</h2>
-                <a href="https://moodle.unsw.edu.au/login/index.php?role=teacher"            class="login-btn">Login
-          with Moodle</a>
-              </div>
-            <!-- Student Card -->
-            <div class="login-card">
-                <img src="assets/graduation.png" alt="Student Logo">
-                <h2>Student Login</h2>
-                <a href="https://moodle.unsw.edu.au/login/index.php?role=student"            class="login-btn">Login
-          with Moodle</a>
-              </div>
-          </div>
-      </main>
-    <footer>&copy; 2025 UNSW Sydney • <a href="https://moodle.telt.unsw.edu.au">Moodle Home</a></footer>
-</body>
 
+  <header>
+    <img src="assets/logo.png" alt="UNSW Logo">
+    <h1>escape room</h1>
+  </header>
+
+  <main>
+    <div class="card-group">
+      <!-- Teacher Card -->
+      <div class="login-card" onclick="location.href='https://moodle.unsw.edu.au/login/index.php?role=teacher'">
+        <img src="assets/teacher.png" alt="Teacher Logo">
+        <h2>Teacher Login</h2>
+        <div class="login-text">Click to login with Moodle</div>
+      </div>
+
+      <!-- Student Card -->
+      <div class="login-card" onclick="location.href='https://moodle.unsw.edu.au/login/index.php?role=student'">
+        <img src="assets/graduation.png" alt="Student Logo">
+        <h2>Student Login</h2>
+        <div class="login-text">Click to login with Moodle</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 UNSW Sydney • <a href="https://moodle.telt.unsw.edu.au">Moodle Home</a>
+  </footer>
+
+</body>
 </html>
