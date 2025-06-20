@@ -4,61 +4,141 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>UNSW Escape-Room Editor</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ─── COLOURS & RESET ───────────────────────────────────────── */
+    :root{
+      --unsw-yellow:#ffe600;
+      --unsw-charcoal:#231f20;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+    html, body {height:100%}
+    body{background:#fff;color:var(--unsw-charcoal);padding-top:56px}
+    a{color:inherit;text-decoration:none}
+    .hidden{display:none}
+
+    /* ─── TOP BAR ─────────────────────────────────────────────────── */
+    .topbar{
+      position:fixed;top:0;left:0;right:0;height:56px;
+      background:var(--unsw-yellow);display:flex;align-items:center;padding:0 1rem;
+      font-weight:700;color:var(--unsw-charcoal);gap:1rem;z-index:1000;
+    }
+    .topbar a{margin-left:auto;font-weight:600}
+
+    /* ─── LAYOUT ──────────────────────────────────────────────────── */
+    .layout{display:flex;height:calc(100% - 56px)}
+
+    /* ─── SIDEBAR ──────────────────────────────────────────────────── */
+    .sidebar{
+      width:240px;background:#fff;padding:8px;overflow-y:auto;
+    }
+
+    /* ─── THUMBNAILS ──────────────────────────────────────────────── */
+    .thumb{
+      width:100%;height:100px;margin-bottom:10px;cursor:pointer;
+      border:2px solid transparent;border-radius:4px;
+      box-shadow:0 1px 3px rgba(0,0,0,0.1);
+    }
+    .thumb.active, .thumb:hover{border-color:var(--unsw-yellow)}
+    .thumb-preview{
+      width:100%;height:100%;background:#f9f9f9;border-radius:2px;overflow:hidden;
+      transform:scale(.2);transform-origin:top left;
+    }
+
+    /* ─── WHITEBOARD & CONTROLS ──────────────────────────────────── */
+    .whiteboard-wrapper{
+      flex:1;display:flex;justify-content:center;align-items:center;position:relative;
+      padding:24px;
+    }
+    .whiteboard{
+      width:90%;height:80%;min-height:300px;min-width:450px;
+      border:3px dashed var(--unsw-yellow);border-radius:6px;
+      padding:2rem;background:#fff;color:#000;overflow:auto;
+    }
+    .controls{
+      position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+      display:flex;gap:1rem;
+    }
+    /* Feedback popup */
+    .feedback-popup{
+      position:absolute;top:60%;left:50%;transform:translate(-50%, -50%);
+      background:var(--unsw-yellow);border:2px solid var(--unsw-charcoal);
+      border-radius:6px;padding:1rem 1.5rem;z-index:200;text-align:center;
+      min-width:200px;
+    }
+    .feedback-popup p{margin-bottom:0.8rem;font-weight:700;}
+
+    /* ─── TOOLBAR ─────────────────────────────────────────────────── */
+    .toolbar{
+      width:280px;background:#fff;border-left:4px solid var(--unsw-yellow);
+      padding:1rem;overflow-y:auto;
+    }
+    .toolbar h2{margin-bottom:1rem;font-size:1.1rem;font-weight:700}
+    label{display:block;font-size:.9rem;margin-top:1rem}
+    input, textarea, select{width:100%;padding:.4rem;margin-top:.4rem;border:1px solid #ccc;border-radius:4px}
+
+    /* ─── BUTTONS ─────────────────────────────────────────────────── */
+    button{
+      padding:.5rem .8rem;border:none;border-radius:4px;
+      background:var(--unsw-yellow);color:var(--unsw-charcoal);font-weight:700;
+      cursor:pointer;
+    }
+    button:hover{background:#e6cf00}
+  </style>
 </head>
 <body>
 
-  <!-- ------ TOP-BAR ------ -->
+  <!-- TOP BAR -->
   <header class="topbar">
     <span>Escape-Room Editor</span>
     <span>Dr Alex Nguyen</span>
     <a href="#">Manage</a>
-    <a href="#">Log&nbsp;out</a>
+    <a href="#">Log out</a>
   </header>
 
   <div class="layout">
-    <!-- ------ SIDEBAR (thumbnails) ------ -->
+
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="thumbs">
-      <div class="thumb active"  data-tpl="tmpl-text"       ><div class="thumb-preview"></div></div>
-      <div class="thumb"         data-tpl="tmpl-video"      ><div class="thumb-preview"></div></div>
-      <div class="thumb"         data-tpl="tmpl-mcq"        ><div class="thumb-preview"></div></div>
-      <div class="thumb"         data-tpl="tmpl-blank"      ><div class="thumb-preview"></div></div>
-      <div class="thumb"         data-tpl="tmpl-interactive"><div class="thumb-preview"></div></div>
-      <div class="thumb"         id="open-discuss"          ><div class="thumb-preview"><p style="margin:55% auto;text-align:center;font-size:2rem;">💬</p></div></div>
+      <div class="thumb active" data-tpl="tmpl-text"><div class="thumb-preview"></div></div>
+      <div class="thumb" data-tpl="tmpl-video"><div class="thumb-preview"></div></div>
+      <div class="thumb" data-tpl="tmpl-mcq"><div class="thumb-preview"></div></div>
+      <div class="thumb" data-tpl="tmpl-blank"><div class="thumb-preview"></div></div>
+      <div class="thumb" data-tpl="tmpl-interactive"><div class="thumb-preview"></div></div>
+      <div class="thumb" data-tpl="tmpl-image"><div class="thumb-preview"></div></div>
     </aside>
 
-    <!-- ------ WHITEBOARD ------ -->
+    <!-- WHITEBOARD + CONTROLS + FEEDBACK -->
     <div class="whiteboard-wrapper">
       <div id="wb" class="whiteboard" contenteditable="true">
         Double-click and start typing your story …
       </div>
+      <div class="controls">
+        <button onclick="saveProgress()">Save Progress</button>
+        <button onclick="prevSlide()">Previous</button>
+        <button onclick="submitAnswer()">Submit</button>
+      </div>
+      <div id="feedbackPopup" class="feedback-popup hidden">
+        <p id="feedbackText">Feedback</p>
+        <button onclick="closeFeedback()">OK</button>
+      </div>
     </div>
 
-    <!-- ------ TOOLBAR ------ -->
+    <!-- TOOLBAR -->
     <aside class="toolbar">
       <h2>Slide settings</h2>
-      <label>Background
-        <input type="color" id="bgPicker" value="#ffffff">
-      </label>
-      <label>Text colour
-        <input type="color" id="fgPicker" value="#000000">
-      </label>
-      <label>Font size (px)
-        <input type="number" id="fsPicker" value="16" min="10" max="72">
-      </label>
+      <label>Background color<input type="color" id="bgPicker" value="#ffffff"></label>
+      <label>Text color<input type="color" id="fgPicker" value="#000000"></label>
+      <label>Font size (px)<input type="number" id="fsPicker" value="16" min="10" max="72"></label>
     </aside>
+
   </div>
 
-  <!-- ------ TEMPLATES (hidden) ------ -->
-  <template id="tmpl-text">
-    Double-click and start typing your story …
-  </template>
-
+  <!-- TEMPLATES -->
+  <template id="tmpl-text">Double-click and start typing your story …</template>
   <template id="tmpl-video">
     <p>Paste a YouTube/Vimeo embed link:</p>
     <textarea placeholder="https://www.youtube.com/embed/…"></textarea>
   </template>
-
   <template id="tmpl-mcq">
     <h3 contenteditable="true">What is the capital of Australia?</h3>
     <ul>
@@ -68,33 +148,24 @@
       <li contenteditable="true">Perth</li>
     </ul>
   </template>
-
   <template id="tmpl-blank">
     <p contenteditable="true">The chemical symbol for water is <u>______</u>.</p>
   </template>
-
   <template id="tmpl-interactive">
     <p><strong>Conditional Question (example)</strong></p>
-    <p>If UID ends in odd → 3 × 7? Even → 8 + 5?</p>
+    <p>If UID ends in odd → 3 × 7?  Even → 8 + 5?</p>
+  </template>
+  <template id="tmpl-image">
+    <p>Insert an image:</p>
+    <input type="file" accept="image/*" onchange="insertImage(event)">
   </template>
 
-  <!-- ------ MODAL DISCUSSION BOARD ------ -->
-  <div id="discussionModal" class="modal hidden">
-    <div class="modal-card">
-      <h3>Discussion Board</h3>
-      <textarea id="post" placeholder="Write a post…"></textarea>
-      <div style="display:flex;gap:.6rem;justify-content:flex-end">
-        <button onclick="addPost()">Post</button>
-        <button onclick="closeModal()">Close</button>
-      </div>
-      <hr style="margin:1rem 0">
-      <div id="feed"></div>
-    </div>
-  </div>
-
-  <!-- ------ JS (tiny) ------ -->
+  <!-- JS -->
   <script>
     const wb=document.getElementById('wb');
+    const slides=['tmpl-text','tmpl-video','tmpl-mcq','tmpl-blank','tmpl-interactive','tmpl-image'];
+    let idx=0;
+    let lastCorrect=false;
 
     /* style controls */
     bgPicker.oninput=e=>wb.style.setProperty('--wb-bg',e.target.value);
@@ -102,31 +173,38 @@
     fsPicker.oninput=e=>wb.style.fontSize=e.target.value+'px';
 
     /* generate thumbnails once */
-    document.querySelectorAll('.thumb[data-tpl]').forEach(th=>{
+    document.querySelectorAll('.thumb').forEach((th,i)=>{
       const tpl=document.getElementById(th.dataset.tpl);
       if(tpl) th.querySelector('.thumb-preview').innerHTML=tpl.innerHTML;
+      th.onclick=()=>{ idx=i; refresh(); };
     });
 
-    /* slide switching & modal trigger */
-    document.querySelectorAll('#thumbs .thumb').forEach(th=>{
-      th.onclick=()=>{
-        if(th.id==='open-discuss'){openModal();return;}
-        document.querySelectorAll('#thumbs .thumb').forEach(x=>x.classList.remove('active'));
-        th.classList.add('active');
-        wb.innerHTML=document.getElementById(th.dataset.tpl).innerHTML;
-      };
-    });
+    function refresh(){
+      document.querySelectorAll('.thumb').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.thumb')[idx].classList.add('active');
+      wb.innerHTML=document.getElementById(slides[idx]).innerHTML;
+    }
 
-    /* modal helpers */
-    const modal=document.getElementById('discussionModal');
-    function openModal(){modal.classList.remove('hidden');}
-    function closeModal(){modal.classList.add('hidden');}
-    function addPost(){
-      const txt=document.getElementById('post');
-      if(!txt.value.trim())return;
-      const div=document.createElement('div');
-      div.style.margin='.55rem 0';div.textContent=txt.value;
-      document.getElementById('feed').prepend(div);txt.value='';
+    function saveProgress(){ alert('Progress saved!'); }
+    function prevSlide(){ if(idx>0){ idx--; refresh(); }}
+    function submitAnswer(){
+      lastCorrect = Math.random()<0.5;
+      const msg = lastCorrect ? '✔️ Correct!' : '❌ Incorrect. Try again.';
+      document.getElementById('feedbackText').textContent = msg;
+      document.getElementById('feedbackPopup').classList.remove('hidden');
+    }
+
+    function closeFeedback(){
+      document.getElementById('feedbackPopup').classList.add('hidden');
+      if(lastCorrect && idx<slides.length-1){ idx++; refresh(); }
+    }
+
+    function insertImage(ev){
+      const f=ev.target.files[0]; if(!f) return;
+      const img=document.createElement('img');
+      img.src=URL.createObjectURL(f);
+      img.style.maxWidth='100%';img.style.maxHeight='100%';
+      wb.innerHTML='';wb.appendChild(img);
     }
   </script>
 </body>

@@ -1,7 +1,7 @@
 /* ─────────────────────────────────  COLOURS  ─────────────────────────── */
 :root{
   --unsw-yellow:#ffe600;      /* lighter UNSW gold                */
-  --unsw-charcoal:#231f20;
+  --unsw-charcoal:#ffffff;
   --sidebar-width:240px;
   --toolbar-width:280px;
 }
