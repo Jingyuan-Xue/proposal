@@ -6,114 +6,125 @@
   <title>Escape Room • Accessibility</title>
   <style>
     :root {
-      --primary: #ffe600;
-      --dark: #231f20;
-      --light: #fafafa;
-      --bg: #f5f5f5;
-      --text: #231f20;
+      --unsw-yellow: #ffd500;
+      --unsw-yellow-dark: #ffbc00;
+      --unsw-charcoal: #1f1a19;
+      --card-bg: #ffffff;
+      --gray-light: #f0f0f0;
+      --gray-mid: #e0e0e0;
       --focus: #065fd4;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { 
-      font-family: Arial, sans-serif; 
-      background: var(--bg); 
-      color: var(--text);
-      transition: background 0.3s, color 0.3s, font-size 0.3s;
+    * { box-sizing:border-box; margin:0; padding:0; font-family:Arial,sans-serif; }
+    body {
+      display:flex; flex-direction:column; min-height:100vh;
+      background:var(--gray-light); color:var(--unsw-charcoal);
     }
+
+    /* —— Header —— */
     header {
-      background: var(--primary);
-      padding: 1rem 2rem;
-      display: flex; align-items: center;
+      background: linear-gradient(90deg, var(--unsw-yellow), var(--unsw-yellow-dark));
+      padding:1rem 2rem; display:flex; align-items:center;
+      box-shadow:0 2px 4px rgba(0,0,0,0.1);
+    }
+    header img {
+      height:40px; margin-right:1rem;
     }
     header h1 {
-      flex: 1; text-align: center; font-size: 1.5rem; font-weight: bold;
+      flex:1; font-size:1.5rem; font-weight:600; text-align:center;
+      color:var(--unsw-charcoal);
     }
     header a {
-      color: var(--dark); text-decoration: none; font-weight: 500;
+      color:var(--unsw-charcoal); text-decoration:none; font-weight:500;
+      padding:0.3rem 0.6rem; border:2px solid transparent;
+      transition:border 0.2s;
     }
+    header a:hover, header a:focus {
+      border-color:var(--unsw-charcoal);
+      outline:none;
+    }
+
+    /* —— Navigation —— */
     nav {
-      background: white;
-      border-bottom: 1px solid #ddd;
+      background:var(--card-bg);
+      box-shadow:0 1px 2px rgba(0,0,0,0.1);
     }
     nav ul {
-      display: flex; list-style: none; justify-content: center;
+      display:flex; justify-content:center; list-style:none;
     }
     nav a {
-      display: block; padding: 0.75rem 1rem;
-      color: var(--text); text-decoration: none; font-weight: 500;
+      display:block; padding:0.75rem 1.25rem;
+      color:var(--unsw-charcoal); text-decoration:none; font-weight:500;
+      transition:background 0.2s;
     }
-    nav a.active, nav a:hover {
-      background: var(--primary);
+    nav a.active {
+      background:var(--unsw-yellow-dark); color:#fff;
     }
-    main { padding: 2rem; }
+    nav a:hover, nav a:focus {
+      background:var(--unsw-yellow); color:var(--unsw-charcoal);
+    }
+
+    /* —— Main Content —— */
+    main {
+      flex:1; padding:2rem; max-width:900px; margin:0 auto;
+    }
     .controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:1rem; margin-bottom:2rem;
     }
     .control-card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 1rem;
+      background:var(--card-bg);
+      border-radius:8px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+      padding:1rem;
     }
     .control-card h2 {
-      font-size: 1.1rem; margin-bottom: 0.5rem;
+      font-size:1.1rem; margin-bottom:0.5rem;
     }
     .control-card button {
-      padding: 0.5rem 1rem;
-      background: var(--dark);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.95rem;
+      padding:0.5rem 1rem;
+      background:var(--unsw-charcoal); color:#fff;
+      border:none; border-radius:4px;
+      cursor:pointer; font-size:0.95rem;
+      transition:background 0.2s;
     }
-    .control-card button:hover { background: #000; }
-    /* focus indicator */
-    button:focus, a:focus {
-      outline: 3px solid var(--focus);
-      outline-offset: 2px;
+    .control-card button:hover, .control-card button:focus {
+      background:#000; outline:none;
     }
-    /* Contrast Mode */
-    body.high-contrast {
-      background: black; color: white;
-    }
-    body.high-contrast header { background: black; }
-    body.high-contrast nav { background: #222; }
-    body.high-contrast .control-card { background: #333; }
-    /* Large Font */
-    body.font-large { font-size: 1.25rem; }
-    /* Colorblind Mode (deuteranopia simulation) */
-    body.colorblind {
-      /* Using a simple filter to simulate red-green colorblindness */
-      filter: grayscale(60%) sepia(20%);
-    }
-    /* Sample content styling */
+
     .sample {
-      background: white;
-      padding: 1rem;
-      border-radius: 6px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      background:var(--card-bg);
+      padding:1rem; border-radius:6px;
+      box-shadow:0 1px 4px rgba(0,0,0,0.1);
     }
+
+    /* —— Footer —— */
     footer {
-      text-align: center; padding: 1rem; font-size: 0.85rem; color: #555;
+      background:var(--card-bg);
+      border-top:1px solid var(--gray-mid);
+      text-align:center; padding:1rem;
+      font-size:0.85rem; color:#777;
+    }
+
+    /* Focus 指示 */
+    button:focus, a:focus {
+      outline:3px solid var(--focus); outline-offset:2px;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Accessibility Settings</h1>
+    <img src="assets/logo.png" alt="UNSW Logo">
+    <h1>Escape Room • Accessibility</h1>
     <a href="student-dashboard.html">Back to Dashboard</a>
   </header>
-  <nav aria-label="Student navigation">
+
+  <nav aria-label="Student Navigation">
     <ul>
       <li><a href="student-dashboard.html">Home</a></li>
-      <li><a href="student-tasks.html">Tasks</a></li>
       <li><a href="student-achievements.html">Achievements</a></li>
       <li><a href="student-history.html">History</a></li>
-      <li><a href="student-accessibility.html" class="active">Accessibility</a></li>
+      <li><a href="student-accessibility.html" class="active" aria-current="page">Accessibility</a></li>
       <li><a href="student-help.html">Help</a></li>
     </ul>
   </nav>
@@ -164,13 +175,13 @@
     }
 
     btnContrast.addEventListener('click', () => toggleClass(btnContrast, 'high-contrast'));
-    btnFont.addEventListener    ('click', () => toggleClass(btnFont,     'font-large'));
-    btnColor.addEventListener   ('click', () => toggleClass(btnColor,    'colorblind'));
-    btnTTS.addEventListener     ('click', () => {
+    btnFont.addEventListener   ('click', () => toggleClass(btnFont,     'font-large'));
+    btnColor.addEventListener  ('click', () => toggleClass(btnColor,    'colorblind'));
+    btnTTS.addEventListener    ('click', () => {
       if(!synth) return alert('Speech Synthesis not supported');
       const text = document.getElementById('content').innerText;
-      const utt = new SpeechSynthesisUtterance(text);
-      synth.cancel(); // stop any ongoing
+      const utt  = new SpeechSynthesisUtterance(text);
+      synth.cancel();
       synth.speak(utt);
     });
   </script>
