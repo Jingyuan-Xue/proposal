@@ -51,6 +51,7 @@
       </div>
       <div class="controls">
         <button onclick="saveProgress()">Save</button>
+        <button onclick="toggleEdit()">Edit</button>
         <button onclick="submitAnswer()">Submit</button>
       </div>
       <div id="feedbackPopup" class="feedback-popup hidden">
@@ -79,6 +80,7 @@
   </div>
 
   <script>
+    let isEditable = true;
     const thumbs = document.getElementById('thumbs');
     const wb = document.getElementById('wb');
     const feedbackText = document.getElementById('feedbackText');
@@ -173,15 +175,19 @@
           refresh();
         };
 
+        if (!isEditable) {
+          removeBtn.style.display = 'none';
+        }
+
         if (block.type === 'text') {
-          div.innerHTML = `<p contenteditable="true" oninput="slidesData[${idx}].blocks[${blockIdx}].content=this.innerText">${block.content || 'Edit text…'}</p>`;
+          div.innerHTML = `<p contenteditable="${isEditable}" oninput="slidesData[${idx}].blocks[${blockIdx}].content=this.innerText">${block.content || 'Edit text…'}</p>`;
         } else if (block.type === 'mcq') {
           div.innerHTML = `
-          <p contenteditable="true" oninput="slidesData[${idx}].blocks[${blockIdx}].question=this.innerText">${block.question || 'Edit question…'}</p>
-          <ul>
-            ${(block.options || []).map((opt, i) =>
-            `<li contenteditable="true" oninput="slidesData[${idx}].blocks[${blockIdx}].options[${i}]=this.innerText">${opt}</li>`).join('')}
-          </ul>`;
+    <p contenteditable="${isEditable}" oninput="slidesData[${idx}].blocks[${blockIdx}].question=this.innerText">${block.question || 'Edit question…'}</p>
+    <ul>
+      ${(block.options || []).map((opt, i) =>
+            `<li contenteditable="${isEditable}" oninput="slidesData[${idx}].blocks[${blockIdx}].options[${i}]=this.innerText">${opt}</li>`).join('')}
+    </ul>`;
         } else if (block.type === 'video') {
           div.innerHTML = `<textarea placeholder="Paste video link…" oninput="slidesData[${idx}].blocks[${blockIdx}].url=this.value">${block.url || ''}</textarea>`;
         } else if (block.type === 'image') {
@@ -202,6 +208,11 @@
       document.getElementById('bgPicker').value = slide.bg;
       document.getElementById('fgPicker').value = slide.fg;
       document.getElementById('fsPicker').value = slide.fs;
+    }
+
+    function toggleEdit() {
+      isEditable = true;
+      refresh();
     }
 
     function addContent() {
@@ -247,8 +258,9 @@
 
     function saveProgress() {
       saveCurrentContent();
-      alert('Progress saved!');
-      console.log('Slides:', slidesData);
+      isEditable = false;
+      refresh();
+      alert('Saved and locked!');
     }
 
     function submitAnswer() {
@@ -282,7 +294,7 @@
 
     //page turning by mouse scrolling
     document.addEventListener('wheel', function (e) {
-      if (feedbackPopup && !feedbackPopup.classList.contains('hidden')) return; 
+      if (feedbackPopup && !feedbackPopup.classList.contains('hidden')) return;
 
       if (e.deltaY > 0) {
         if (idx < slidesData.length - 1) {
