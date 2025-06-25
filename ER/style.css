@@ -1,93 +1,240 @@
-/* ─────────────────────────────────  COLOURS  ─────────────────────────── */
-:root{
-  --unsw-yellow:#ffe600;      /* lighter UNSW gold                */
-  --unsw-charcoal:#ffffff;
-  --sidebar-width:240px;
-  --toolbar-width:280px;
+/* ──────────────────────────────── COLORS ─────────────────────────────── */
+:root {
+  --unsw-yellow: #ffe600;
+  --unsw-charcoal: #231f20;
+  --sidebar-width: 240px;
+  --toolbar-width: 280px;
 }
 
-/* ───────────────────────────  GLOBAL RESET  ─────────────────────────── */
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
-html,body{height:100%}
-
-/* ─────────────────────────────  TOP-BAR  ────────────────────────────── */
-.topbar{
-  position:fixed;inset:0 0 auto 0;height:56px;
-  background:var(--unsw-yellow);color:var(--unsw-charcoal);
-  display:flex;align-items:center;gap:1.5rem;padding:0 1rem;font-weight:700;
-  z-index:1000;
+/* ────────────────────────────── RESET ───────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
-.topbar a{margin-left:auto;font-weight:600;text-decoration:none;color:inherit}
-.topbar a:nth-of-type(2){margin-left:1rem}
-
-/* add whitespace below topbar */
-body{background:#fff;color:var(--unsw-charcoal);padding-top:56px}
-
-/* ───────────────────────────  FLEX LAYOUT  ──────────────────────────── */
-.layout{
-  display:flex;height:calc(100% - 56px); /* full height minus topbar */
+html, body {
+  height: 100%;
+  background: #fff;
+  color: var(--unsw-charcoal);
+  padding-top: 56px;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.hidden {
+  display: none;
 }
 
-/* ────────────────────────  LEFT SIDEBAR / THUMBS  ──────────────────── */
-.sidebar{
-  width:var(--sidebar-width);background:var(--unsw-charcoal);padding:8px 4px 12px;
-  overflow-y:auto;
+/* ───────────────────────────── TOPBAR ───────────────────────────────── */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: var(--unsw-yellow);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  font-weight: 700;
+  color: var(--unsw-charcoal);
+  gap: 1rem;
+  z-index: 1000;
 }
-.thumb{
-  height:140px;margin-bottom:10px;cursor:pointer;position:relative;
-  border:2px solid transparent;border-radius:4px;
+.topbar a {
+  margin-left: auto;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ───────────────────────────── LAYOUT ───────────────────────────────── */
+.layout {
+  display: flex;
+  height: calc(100% - 56px);
+}
+
+/* ───────────────────────────── SIDEBAR ─────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-width);
+  background: #fff;
+  padding: 8px;
+  overflow-y: auto;
+}
+.thumb {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 .thumb.active,
-.thumb:hover{border-color:var(--unsw-yellow)}
-.thumb-preview{
-  width:100%;height:100%;pointer-events:none;background:#fff;border-radius:2px;
-  overflow:hidden;display:flex;justify-content:flex-start;align-items:flex-start;
+.thumb:hover {
+  border-color: var(--unsw-yellow);
 }
-.thumb-preview>*{
-  transform:scale(.25);transform-origin:top left;          /* bigger mini-view */
-}
-
-/* ─────────────────────────  WHITEBOARD (centre)  ────────────────────── */
-.whiteboard-wrapper{
-  flex:1;display:flex;justify-content:center;align-items:center;overflow:auto;
-  padding:24px;
-}
-.whiteboard{
-  width:90%;height:90%;min-height:320px;min-width:480px;
-  border:3px dashed var(--unsw-yellow);border-radius:6px;
-  padding:2rem;background:var(--wb-bg,#fff);color:var(--wb-color,#000);
-  overflow:auto;
+.thumb-preview {
+  width: 100%;
+  height: 100%;
+  background: #f9f9f9;
+  border-radius: 2px;
+  overflow: hidden;
+  transform: scale(0.2);
+  transform-origin: top left;
 }
 
-/* ─────────────────────────  TOOLBAR (right)  ────────────────────────── */
-.toolbar{
-  width:var(--toolbar-width);padding:1.25rem;background:#fff;
-  border-left:4px solid var(--unsw-yellow);overflow-y:auto;
-}
-.toolbar h2{font-size:1.1rem;margin-bottom:1rem;font-weight:700}
-label{display:block;font-size:.85rem;margin-top:1rem}
-input[type="color"],
-input[type="number"],
-textarea,select{
-  width:100%;padding:.45rem;border:1px solid #ccc;border-radius:4px;margin-top:.35rem
+.sidebar {
+  width: var(--sidebar-width);
+  background: #fff;
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-/* ───────────────────────────  BUTTONS  ──────────────────────────────── */
-button{
-  cursor:pointer;padding:.5rem .9rem;border:0;border-radius:4px;
-  background:var(--unsw-yellow);color:var(--unsw-charcoal);font-weight:700;
+#thumbs {
+  flex: 1;
 }
-button:hover{background:#e6cf00}
 
-/* ───────────────────────────  MODAL  ────────────────────────────────── */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);
-       display:flex;justify-content:center;align-items:center;z-index:1500}
-.modal.hidden{display:none}
-.modal-card{
-  width:min(620px,90%);max-height:85vh;background:#fff;border-radius:8px;
-  border-top:8px solid var(--unsw-yellow);padding:1.5rem;overflow:auto
+.add-slide-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.5rem;
+  background: var(--unsw-yellow);
+  color: var(--unsw-charcoal);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
 }
-.modal-card h3{margin-bottom:.9rem;font-size:1.25rem;font-weight:700}
-.modal textarea{width:100%;min-height:90px;margin-bottom:.6rem}
 
-/* ─────────────────────────────────────────────────────────────────────── */
+.add-slide-btn:hover {
+  background: #e6cf00;
+}
+
+/* ─────────────────────────── WHITEBOARD ────────────────────────────── */
+.whiteboard-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 24px;
+}
+.whiteboard {
+  width: 90%;
+  height: 80%;
+  min-height: 300px;
+  min-width: 450px;
+  border: 3px dashed var(--unsw-yellow);
+  border-radius: 6px;
+  padding: 2rem;
+  background: var(--wb-bg, #fff);
+  color: var(--wb-color, #000);
+  overflow: auto;
+}
+
+/* ─────────────────────────── CONTROLS ──────────────────────────────── */
+.controls {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+}
+button {
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  background: var(--unsw-yellow);
+  color: var(--unsw-charcoal);
+  font-weight: 700;
+  cursor: pointer;
+}
+button:hover {
+  background: #e6cf00;
+}
+
+/* ─────────────────────────── TOOLBAR ───────────────────────────────── */
+.toolbar {
+  width: var(--toolbar-width);
+  background: #fff;
+  border-left: 4px solid var(--unsw-yellow);
+  padding: 1rem;
+  overflow-y: auto;
+}
+.toolbar h2 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+label {
+  display: block;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 0.4rem;
+  margin-top: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* ─────────────────────────── FEEDBACK POPUP ────────────────────────── */
+.feedback-popup {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--unsw-yellow);
+  border: 2px solid var(--unsw-charcoal);
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  z-index: 200;
+  text-align: center;
+  min-width: 200px;
+}
+.feedback-popup p {
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+}
+
+/* ─────────────────────────── MODAL (Optional) ───────────────────────── */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1500;
+}
+.modal.hidden {
+  display: none;
+}
+.modal-card {
+  width: min(620px, 90%);
+  max-height: 85vh;
+  background: #fff;
+  border-radius: 8px;
+  border-top: 8px solid var(--unsw-yellow);
+  padding: 1.5rem;
+  overflow: auto;
+}
+.modal-card h3 {
+  margin-bottom: 0.9rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.modal textarea {
+  width: 100%;
+  min-height: 90px;
+  margin-bottom: 0.6rem;
+}
