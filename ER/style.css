@@ -64,12 +64,12 @@ a {
 }
 
 /* ───────────────────────────── SIDEBAR ─────────────────────────────── */
-.sidebar {
+/* .sidebar {
   width: var(--sidebar-width);
   background: #fff;
   padding: 8px;
   overflow-y: auto;
-}
+} */
 
 .thumb {
   width: 100%;
