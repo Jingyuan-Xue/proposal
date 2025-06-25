@@ -13,16 +13,22 @@
   padding: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
-html, body {
+
+html,
+body {
+  margin: 0;
+  padding: 0;
   height: 100%;
   background: #fff;
   color: var(--unsw-charcoal);
-  padding-top: 56px;
+  /* padding-top: 35px; */
 }
+
 a {
   color: inherit;
   text-decoration: none;
 }
+
 .hidden {
   display: none;
 }
@@ -33,7 +39,7 @@ a {
   top: 0;
   left: 0;
   right: 0;
-  height: 56px;
+  height: 60px;
   background: var(--unsw-yellow);
   display: flex;
   align-items: center;
@@ -43,6 +49,7 @@ a {
   gap: 1rem;
   z-index: 1000;
 }
+
 .topbar a {
   margin-left: auto;
   font-weight: 600;
@@ -53,6 +60,7 @@ a {
 .layout {
   display: flex;
   height: calc(100% - 56px);
+  margin-top: 60px;
 }
 
 /* ───────────────────────────── SIDEBAR ─────────────────────────────── */
@@ -62,6 +70,7 @@ a {
   padding: 8px;
   overflow-y: auto;
 }
+
 .thumb {
   width: 100%;
   height: 100px;
@@ -71,10 +80,12 @@ a {
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
 .thumb.active,
 .thumb:hover {
   border-color: var(--unsw-yellow);
 }
+
 .thumb-preview {
   width: 100%;
   height: 100%;
@@ -124,9 +135,10 @@ a {
   position: relative;
   padding: 24px;
 }
+
 .whiteboard {
-  width: 90%;
-  height: 80%;
+  width: 95%;
+  height: 85%;
   min-height: 300px;
   min-width: 450px;
   border: 3px dashed var(--unsw-yellow);
@@ -146,6 +158,7 @@ a {
   display: flex;
   gap: 1rem;
 }
+
 button {
   padding: 0.5rem 0.8rem;
   border: none;
@@ -155,6 +168,7 @@ button {
   font-weight: 700;
   cursor: pointer;
 }
+
 button:hover {
   background: #e6cf00;
 }
@@ -166,17 +180,21 @@ button:hover {
   border-left: 4px solid var(--unsw-yellow);
   padding: 1rem;
   overflow-y: auto;
+  height: 100vh;
 }
+
 .toolbar h2 {
   margin-bottom: 1rem;
   font-size: 1.1rem;
   font-weight: 700;
 }
+
 label {
   display: block;
   font-size: 0.9rem;
   margin-top: 1rem;
 }
+
 input,
 textarea,
 select {
@@ -201,6 +219,7 @@ select {
   text-align: center;
   min-width: 200px;
 }
+
 .feedback-popup p {
   margin-bottom: 0.8rem;
   font-weight: 700;
@@ -216,9 +235,11 @@ select {
   align-items: center;
   z-index: 1500;
 }
+
 .modal.hidden {
   display: none;
 }
+
 .modal-card {
   width: min(620px, 90%);
   max-height: 85vh;
@@ -228,11 +249,13 @@ select {
   padding: 1.5rem;
   overflow: auto;
 }
+
 .modal-card h3 {
   margin-bottom: 0.9rem;
   font-size: 1.25rem;
   font-weight: 700;
 }
+
 .modal textarea {
   width: 100%;
   min-height: 90px;
